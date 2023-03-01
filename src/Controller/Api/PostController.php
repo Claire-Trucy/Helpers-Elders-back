@@ -33,14 +33,7 @@ class PostController extends AbstractController
         $this->security = $security;
     }
     
-     /**
-     * Get User
-     * @Route("/api/user", name="app_api_user_get", methods={"GET"})
-     */
-    public function getLoggedUser(): JsonResponse
-    {
-        return $this->json($this->getUser(), Response::HTTP_OK);
-    }
+    
 
    
     /**
@@ -106,14 +99,12 @@ class PostController extends AbstractController
      * @Route("/api/annonce/ajouter", name="app_api_post_add", methods={"POST"})
      * 
      */
-    public function add(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, PostRepository $postRepository): JsonResponse
+    public function add(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, PostRepository $postRepository): Response
     {
 
-        
-        
         // getting the json of notre request
         $json = $request->getContent();
-        
+         
         
         try{
             
@@ -154,7 +145,7 @@ class PostController extends AbstractController
             $post,
             Response::HTTP_CREATED,
             [
-                "Location" => $this->generateUrl("app_api_post_getOneById", ["id" => $post->getId()])
+              //  "Location" => $this->generateUrl("app_api_post_getOneById", ["id" => $post->getId()])
             ],
             [
                 "groups" => "posts"
@@ -170,9 +161,7 @@ class PostController extends AbstractController
     {
         
         $this->denyAccessUnlessGranted('post_edit', $post);
-        //if($post->getUser() != $this->security->getUser()){
-            //throw $this->createAccessDeniedException('Access denied: Vous n\'êtes pas l\'auteur de ce post');
-        //}
+       
 
         // Getting the JSON of our request
         $json = $request->getContent();
@@ -182,7 +171,6 @@ class PostController extends AbstractController
         } catch (NotEncodableValueException $e) {
             return $this->json(["error" => "JSON non valide"], Response::HTTP_BAD_REQUEST);
         }
-
 
 
         // Validate the post
@@ -207,7 +195,7 @@ class PostController extends AbstractController
             $post,
             Response::HTTP_OK,
             [
-                "Location" => $this->generateUrl("app_api_post_getOneById", ["id" => $post->getId()])
+               // "Location" => $this->generateUrl("app_api_post_getOneById", ["id" => $post->getId()])
             ],
             [
                 "groups" => "posts"
@@ -224,13 +212,11 @@ class PostController extends AbstractController
     {
         
         $this->denyAccessUnlessGranted('post_delete', $post);
-        //if($post->getUser() != $this->security->getUser()){
-            //throw $this->createAccessDeniedException('Access denied: Vous n\'êtes pas l\'auteur de ce post');
-        //}
+       
         $entityManager->remove($post);
         $entityManager->flush();
         
-        return $this->redirectToRoute('app_api_user_myProfil', ["id" => $post->getUser()->getId()], Response::HTTP_SEE_OTHER);
+        return new JsonResponse(['message' => 'Annonce supprimée avec succès']);
     }
 
 
