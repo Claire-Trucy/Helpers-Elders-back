@@ -79,11 +79,7 @@ class ReviewController extends AbstractController
             $review,
             Response::HTTP_CREATED,
             [
-<<<<<<< HEAD
-                "Location" => $this->generateUrl("app_api_user_getUserById", ["id" => $review->getUserTaker()->getId()])
-=======
                // "Location" => $this->generateUrl("app_api_user_getUserById", ["id" => $review->getUserTaker()->getId()])
->>>>>>> 4ff9ce7a5f2e7f0a5d263bf1f292614ff26ed125
             ],
             [
                 "groups" => "reviews"
